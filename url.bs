@@ -172,8 +172,8 @@ SPACE, U+0022 ("), U+0023 (#), U+003C (&lt;), U+003E (&gt;).
 <p class=note>The <a>query percent-encode set</a> cannot be defined in terms of the <a>fragment
 percent-encode set</a>, due to the omission of U+0060 (`).
 
-<p>The <dfn oldids=default-encode-set>path percent-encode set</dfn> is the
-<a>fragment percent-encode set</a> and U+0023 (#), U+003F (?), U+007B ({), and U+007D (}).
+<p>The <dfn oldids=default-encode-set>path percent-encode set</dfn> is the <a>query percent-encode
+set</a> and U+003F (?), U+007B ({), U+007D (}), and U+0060 (`).
 
 <p>The <dfn oldids=userinfo-encode-set>userinfo percent-encode set</dfn> is the
 <a>path percent-encode set</a> and U+002F (/), U+003A (:), U+003B (;), U+003D (=), U+0040 (@),
