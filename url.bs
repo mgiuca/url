@@ -2278,45 +2278,11 @@ string <var>input</var>, optionally with a <a>base URL</a> <var>base</var>, opti
        <li><p>If <a>c</a> is U+0025 (%) and <a>remaining</a> does not start with two
        <a>ASCII hex digits</a>, <a>validation error</a>.
 
-       <li><p>Let <var>bytes</var> be the result of <a lt=encode>encoding</a> <a>c</a> using
-       <var>encoding</var>.
+       <li><p><a>Character percent encode</a> <a>c</a> using <var>encoding</var> and the <a>query
+       percent-encode set</a>, and append the result to <var>url</var>'s <a for=url>query</a>.
 
-       <li>
-        <p>If <var>bytes</var> starts with `<code>&amp;#</code>` and ends with 0x3B (;), then:
-
-        <ol>
-         <li><p>Replace `<code>&amp;#</code>` at the start of <var>bytes</var> with
-         `<code>%26%23</code>`.
-
-         <li><p>Replace 0x3B (;) at the end of <var>bytes</var> with `<code>%3B</code>`.
-
-         <li><p>Append <var>bytes</var>, <a>isomorphic decoded</a>, to <var>url</var>'s
-         <a for=url>query</a>.
-        </ol>
-
-        <p class="note no-backref">This can happen when <a lt=encode>encoding</a> code points using
-        a non-<a>UTF-8</a> <a for=/>encoding</a>.
-
-       <li>
-        <p>Otherwise, for each <var>byte</var> in <var>bytes</var>:
-
-        <ol>
-         <li>
-          <p>If one of the following is true
-
-          <ul class=brief>
-           <li><p><var>byte</var> is less than 0x21 (!)
-           <li><p><var>byte</var> is greater than 0x7E (~)
-           <li><p><var>byte</var> is 0x22 ("), 0x23 (#), 0x3C (&lt;), or 0x3E (>)
-           <li><p><var>byte</var> is 0x27 (') and <var>url</var> <a>is special</a>
-          </ul>
-
-          <p>then append <var>byte</var>, <a lt="percent encode">percent encoded</a>, to
-          <var>url</var>'s <a for=url>query</a>.
-
-         <li><p>Otherwise, append a code point whose value is <var>byte</var> to
-         <var>url</var>'s <a for=url>query</a>.
-        </ol>
+       <p>TODO: Also encode if <var>byte</var> is 0x27 (') and <var>url</var>
+       <a>is special</a>.</p>
       </ol>
     </ol>
 
