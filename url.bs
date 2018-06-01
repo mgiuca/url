@@ -174,19 +174,41 @@ U+0020 SPACE, U+0022 ("), U+003C (&lt;), U+003E (&gt;), and U+0060 (`).
 <a>path percent-encode set</a> and U+002F (/), U+003A (:), U+003B (;), U+003D (=), U+0040 (@),
 U+005B ([), U+005C (\), U+005D (]), U+005E (^), and U+007C (|).
 
-<p>To <dfn>UTF-8 percent encode</dfn> a <var>codePoint</var>, using a <var>percentEncodeSet</var>,
-run these steps:
+<p>To <dfn>character percent encode</dfn> a <var>codePoint</var>, using encoding <var>encoding</var>
+and a <var>percentEncodeSet</var>, run these steps:
 
 <ol>
  <li><p>If <var>codePoint</var> is not in <var>percentEncodeSet</var>, then return
  <var>codePoint</var>.
 
- <li><p>Let <var>bytes</var> be the result of running <a>UTF-8 encode</a> on
- <var>codePoint</var>.
+ <li><p>Let <var>bytes</var> be the result of <a lt=encode>encoding</a> <var>codePoint</var> using
+ <var>encoding</var>.
+
+ <li>
+  <p>If <var>bytes</var> starts with 0x26 (&amp;), 0x23 (#) and ends with 0x3B (;), then:
+
+  <ol>
+   <li><p>Let <var>charRef</var> be <var>bytes</var>, <a>isomorphic decoded</a>.
+
+   <li><p>Replace the first two code points of <var>charRef</var> with `<code>%26%23</code>`.
+
+   <li><p>Replace the last code point of <var>charRef</var> with `<code>%3B</code>`.
+
+   <li><p>Return <var>charRef</var>.
+  </ol>
+
+  <p class="note no-backref">This can only happen when <var>encoding</var> is a legacy encoding
+  (i.e., not <a>UTF-8</a>). It is necessary to explicitly encode these rather than relying on the <a
+  lt="percent encode">percent encoding</a> step, to avoid encoding the digits in between the
+  character ref delimiters.
 
  <li><p><a>Percent encode</a> each byte in <var>bytes</var>, and then return the results
  concatenated, in the same order.
 </ol>
+
+<p>To <dfn>UTF-8 percent encode</dfn> a <var>codePoint</var>, using a <var>percentEncodeSet</var>,
+<a>character percent encode</a> <var>codePoint</var>, using <a>UTF-8</a> and
+<var>percentEncodeSet</var>.
 
 
 
