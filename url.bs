@@ -157,9 +157,7 @@ contains bytes that are not <a>ASCII bytes</a> might be insecure and is not reco
 
 <!-- the escape sets are minimal as escaping can lead to problems; we might
      be able to escape more here but only if implementers are willing and
-     there's an upside
-
-     note that application/x-www-form-urlencoded uses its own local set -->
+     there's an upside -->
 <p>The <dfn oldids=simple-encode-set>C0 control percent-encode set</dfn> are the <a>C0 controls</a>
 and all <a>code points</a> greater than U+007E (~).
 
@@ -178,6 +176,13 @@ set</a> and U+003F (?), U+007B ({), U+007D (}), and U+0060 (`).
 <p>The <dfn oldids=userinfo-encode-set>userinfo percent-encode set</dfn> is the
 <a>path percent-encode set</a> and U+002F (/), U+003A (:), U+003B (;), U+003D (=), U+0040 (@),
 U+005B ([), U+005C (\), U+005D (]), U+005E (^), and U+007C (|).
+
+<p>The <dfn>application/x-www-form-urlencoded percent-encode set</dfn> is the <a>userinfo
+percent-encode set</a> and U+0021 (!), U+0024 ($), U+0025 (%), U+0026 (&), U+0027 ('), U+0028 LEFT
+PARENTHESIS, U+0029 RIGHT PARENTHESIS, U+002B (+), U+002C (,), and U+007E (~).
+
+<p class=note>The <a>application/x-www-form-urlencoded percent-encode set</a> contains all code
+points, except the <a>ASCII alphanumeric</a>, U+002A (*), U+002D (-), U+002E (.), and U+005F (_).
 
 <p>To <dfn>character percent encode</dfn> a <var>codePoint</var>, using encoding <var>encoding</var>
 and a <var>percentEncodeSet</var>, run these steps:
