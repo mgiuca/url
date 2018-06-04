@@ -184,12 +184,16 @@ PARENTHESIS, U+0029 RIGHT PARENTHESIS, U+002B (+), U+002C (,), and U+007E (~).
 <p class=note>The <a>application/x-www-form-urlencoded percent-encode set</a> contains all code
 points, except the <a>ASCII alphanumeric</a>, U+002A (*), U+002D (-), U+002E (.), and U+005F (_).
 
-<p>To <dfn>character percent encode</dfn> a <var>codePoint</var>, using encoding <var>encoding</var>
-and a <var>percentEncodeSet</var>, run these steps:
+<p>To <dfn>character percent encode</dfn> a <var>codePoint</var>, using encoding
+<var>encoding</var>, a <var>percentEncodeSet</var>, and an optional <var>space-as-plus flag</var>,
+run these steps:
 
 <ol>
  <li><p>If <var>codePoint</var> is not in <var>percentEncodeSet</var>, then return
  <var>codePoint</var>.
+
+ <li><p>If <var>codePoint</var> is U+0020 SPACE and the <var>space-as-plus flag</var> is set, return
+ U+002B (+).
 
  <li><p>Let <var>bytes</var> be the result of <a lt=encode>encoding</a> <var>codePoint</var> using
  <var>encoding</var>.
@@ -220,6 +224,11 @@ and a <var>percentEncodeSet</var>, run these steps:
 <a>character percent encode</a> <var>codePoint</var>, using <a>UTF-8</a> and
 <var>percentEncodeSet</var>.
 
+<p>To <dfn>string percent encode</dfn> a <var>string</var>, using encoding <var>encoding</var>, a
+<var>percentEncodeSet</var>, and an optional <var>space-as-plus flag</var>, <a>character percent
+encode</a> each code point in <var>string</var>, with <var>encoding</var>,
+<var>percentEncodeSet</var>, and the <var>space-as-plus flag</var>, and then return the results
+concatenated, in the same order.
 
 
 <h2 id=security-considerations>Security considerations</h2>
@@ -2573,48 +2582,6 @@ takes a byte sequence <var>input</var>, and then runs these steps:
 <h3 id=urlencoded-serializing><code>application/x-www-form-urlencoded</code> serializing</h3>
 
 <p>The
-<dfn id=concept-urlencoded-byte-serializer lt='urlencoded byte serializer'><code>application/x-www-form-urlencoded</code> byte serializer</dfn>
-takes a byte sequence <var>input</var> and then runs these steps:
-
-<ol>
- <li><p>Let <var>output</var> be the empty string.
- <li>
-  <p>For each byte in <var>input</var>, depending on
-  <var>byte</var>:
-
-  <dl>
-   <dt>0x20 (SP)
-   <dd><p>Append U+002B (+) to <var>output</var>.
-
-   <dt>0x2A (*)
-   <dt>0x2D (-)
-   <dt>0x2E (.)
-   <dt>0x30 (0) to 0x39 (9)
-   <dt>0x41 (A) to 0x5A (Z)
-   <dt>0x5F (_)
-   <dt>0x61 (a) to 0x7A (z)
-   <dd><p>Append a code point whose value is <var>byte</var> to
-   <var>output</var>.
-
-   <dt>Otherwise
-   <dd><p>Append <var>byte</var>,
-   <a lt="percent encode">percent encoded</a>, to
-   <var>output</var>.
-  </dl>
- <li><p>Return <var>output</var>.
-</ol>
-<!-- The inverse of the above byte set is all bytes
-     less than 0x20,
-     0x21 to 0x29,
-     0x2B,
-     0x2C,
-     0x2F,
-     0x3A to 0x40,
-     0x5B to 0x5E,
-     0x60,
-     bytes greater than 0x7A -->
-
-<p>The
 <dfn export id=concept-urlencoded-serializer lt='urlencoded serializer'><code>application/x-www-form-urlencoded</code> serializer</dfn>
 takes a list of name-value tuples <var>tuples</var>, optionally with an <a for=/>encoding</a>
 <var>encoding override</var>, and then runs these steps:
@@ -2631,15 +2598,19 @@ takes a list of name-value tuples <var>tuples</var>, optionally with an <a for=/
   <p><a for=list>For each</a> <var>tuple</var> in <var>tuples</var>:
 
   <ol>
-   <li><p>Let <var>name</var> be the result of <a lt="urlencoded byte serializer">serializing</a>
-   the result of <a lt=encode>encoding</a> <var>tuple</var>'s name, using <var>encoding</var>.
+   <li><p>Let <var>name</var> be the result of <a lt="string percent encode">string
+   percent-encoding</a> <var>tuple</var>'s name, using <var>encoding</var>, and the
+   <a>application/x-www-form-urlencoded percent-encode set</a>, with the <var>space-as-plus
+   flag</var> set.
 
    <li><p>Let <var>value</var> be <var>tuple</var>'s value.
 
    <li><p>If <var>value</var> is a file, then set <var>value</var> to <var>value</var>'s filename.
 
-   <li><p>Set <var>value</var> to the result of <a lt="urlencoded byte serializer">serializing</a>
-   the result of <a lt=encode>encoding</a> <var>value</var>, using <var>encoding</var>.
+   <li><p>Set <var>value</var> to the result of <a lt="string percent encode">string
+   percent-encoding</a> <var>value</var>, using <var>encoding</var>, and the
+   <a>application/x-www-form-urlencoded percent-encode set</a>, with the <var>space-as-plus
+   flag</var> set.
 
    <li><p>If <var>tuple</var> is not the first pair in <var>tuples</var>, then append
    U+0026 (&amp;) to <var>output</var>.
